@@ -34,18 +34,40 @@ enum custom_keycodes {
     KC_LOWER,
     KC_RAISE,
     KC_ADJUST,
+    FAKE_0,
+    FAKE_1,
+    FAKE_2,
+    FAKE_3,
+    FAKE_4,
+    FAKE_5,
+    FAKE_6,
+    FAKE_7,
+    FAKE_8,
+    FAKE_9,
+    FAKE_COMM,
+    FAKE_DOT,
+    FAKE_Q,
+    FAKE_BSPC,
+    FAKE_QUOT,
+    SEQ_NTILDE,
+    SEQ_INV_QUESTION,
     KC_PRVWD,
     KC_NXTWD,
     KC_LSTRT,
     KC_LEND,
-    KC_DLINE,
-    KC_BSPC_DEL, // taken from helltm
+    KC_DLINE
 };
+
+#define FAKE_KC_FIRST FAKE_0
+#define FAKE_KC_LAST FAKE_QUOT
+#define FAKE_KC_COUNT (1 + FAKE_KC_LAST - FAKE_KC_FIRST)
+
+const uint16_t keycode_to_layer[] = {_QWERTY, _QWERTY_LA, _COLEMAK};
 
 
 // space cadet settings
 
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] PROGMEM = {
 /*
  * QWERTY
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -63,10 +85,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_QWERTY] = LAYOUT(
-  KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_BSPC_DEL,
-  KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,  KC_GRV,
-  KC_CAPS,   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN,  KC_QUOT,
-  SC_LSPO,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,XXXXXXX,      KC_MUTE,KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  SC_RSPC,
+  KC_ESC, FAKE_1, FAKE_2,  FAKE_3,  FAKE_4,  FAKE_5,                   FAKE_6,  FAKE_7,  FAKE_8,  FAKE_9,  FAKE_0,  FAKE_BSPC,
+  KC_TAB, FAKE_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,  KC_GRV,
+  KC_CAPS,   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L, SEQ_NTILDE,  KC_QUOT,
+  SC_LSPO,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,XXXXXXX,      KC_MUTE,KC_N,    KC_M, FAKE_COMM, FAKE_DOT, KC_MINUS,SC_RSPC,
                  SC_LCPO,KC_LGUI,SC_LAPO, MO(_LOWER), KC_SPC,      KC_ENT,  MO(_RAISE), SC_RAPC, KC_RGUI, SC_RCPC
 ),
 
@@ -87,10 +109,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_QWERTY_LA] = LAYOUT(
-  KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_BSPC_DEL,
-  KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,  KC_GRV,
-  KC_CAPS,   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN,  KC_QUOT,
-  SC_LSPO,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,XXXXXXX,      KC_MUTE,KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  SC_RSPC,
+  KC_ESC, FAKE_1, FAKE_2,  FAKE_3,  FAKE_4,  FAKE_5,                   FAKE_6,  FAKE_7,  FAKE_8,  FAKE_9,  FAKE_0,  FAKE_BSPC,
+  KC_TAB, FAKE_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,  KC_GRV,
+  KC_CAPS,   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L, SEQ_NTILDE,  KC_QUOT,
+  SC_LSPO,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,XXXXXXX,      KC_MUTE,KC_N,    KC_M, FAKE_COMM, FAKE_DOT, KC_MINUS,SC_RSPC,
                  SC_LCPO,KC_LGUI,SC_LAPO, MO(_LOWER), KC_SPC,      KC_ENT,  MO(_RAISE), SC_RAPC, KC_RGUI, SC_RCPC
 ),
 
@@ -114,7 +136,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_GRV,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_GRV,
   KC_ESC,   KC_Q,   KC_W,    KC_F,    KC_P,    KC_G,                      KC_J,    KC_L,    KC_U,    KC_Y, KC_SCLN,  KC_BSPC,
   KC_TAB,   KC_A,   KC_R,    KC_S,    KC_T,    KC_D,                      KC_H,    KC_N,    KC_E,    KC_I,    KC_O,  KC_QUOT,
-  SC_LSPO,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,      XXXXXXX,KC_K,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,  SC_RSPC,
+  SC_LSPO,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MUTE,      XXXXXXX,KC_K,    KC_M, KC_COMM,  KC_DOT, KC_MINUS,SC_RSPC,
                  KC_LGUI,SC_LAPO,SC_LCPO,MO(_LOWER), KC_ENT,        KC_SPC,  MO(_RAISE), SC_RCPC, SC_RAPC, KC_RGUI
 ),
 
@@ -155,8 +177,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *            `----------------------------------'           '------''---------------------------'
  */
 [_RAISE] = LAYOUT(
-  _______, _______ , _______ , _______ , _______ , _______,                           _______,  _______  , _______,  _______ ,  _______ ,_______,
-  _______,  KC_INS,  KC_PSCR,   KC_APP,  XXXXXXX, XXXXXXX,                        KC_PGUP, KC_PRVWD,   KC_UP, KC_NXTWD,KC_DLINE, KC_BSPC,
+  _______, _______ , _______ , _______ , _______ , _______,                           _______,  _______  , _______,  _______ ,FAKE_QUOT, SEQ_INV_QUESTION,
+  _______,  KC_INS,  KC_PSCR,   KC_APP,  XXXXXXX, XXXXXXX,                        KC_PGUP, KC_PRVWD,   KC_UP, KC_NXTWD,  _______ ,_______,
   _______, KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX, KC_CAPS,                       KC_PGDN,  KC_LEFT, KC_DOWN, KC_RGHT,  KC_DEL, KC_BSPC,
   _______,KC_UNDO, KC_CUT, KC_COPY, KC_PASTE, XXXXXXX,  _______,       _______,  XXXXXXX, KC_LSTRT, XXXXXXX, KC_LEND,   XXXXXXX, _______,
                          _______, _______, _______, _______, _______,       _______, _______, _______, _______, _______

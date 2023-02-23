@@ -22,8 +22,13 @@
 //#define ENCODER_RESOLUTION 4
 //#endif
 
-#define OLED_TIMEOUT 0
-#define OLED_BRIGHTNESS 10
+#ifdef TAPPING_TERM
+#undef TAPPING_TERM
+#define TAPPING_TERM 250
+#endif
+
+#define OLED_TIMEOUT 120000
+#define OLED_BRIGHTNESS 120
 
 
 // space cadet configuration

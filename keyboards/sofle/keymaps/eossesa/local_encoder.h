@@ -19,19 +19,10 @@
 #ifdef ENCODER_ENABLE
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (index == 0) {
-        if (clockwise) {
-            tap_code(KC_BRIU);
-        } else {
-            tap_code(KC_BRID);
-        }
-    } else if (index == 1) {
-        if (clockwise) {
-            tap_code(KC_VOLU);
-        } else {
-            tap_code(KC_VOLD);
-        }
-    }
+    const uint16_t k = (index == 0) ? (clockwise ? KC_BRIU : KC_BRID) :
+                                      (clockwise ? KC_VOLU : KC_VOLD);
+    tap_code(k);
+
     return true;
 }
 

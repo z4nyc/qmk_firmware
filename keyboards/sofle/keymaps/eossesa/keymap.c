@@ -17,6 +17,7 @@
 #include QMK_KEYBOARD_H
 
 #include "local_layers.h"
+#include "local_special_keys.h"
 #include "local_encoder.h"
 #include "local_oled.h"
 
@@ -25,32 +26,40 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    const uint8_t mod_state = get_mods();
+
     switch (keycode) {
-        case KC_QWERTY:
+        case KC_QWERTY ... KC_COLEMAK:
             if (record->event.pressed) {
-                set_single_persistent_default_layer(_QWERTY);
+                set_single_persistent_default_layer(keycode_to_layer[keycode - KC_QWERTY]);
             }
             return false;
-            #if 0
-        case KC_LOWER:
-            if (record->event.pressed) {
-                layer_on(_LOWER);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-            } else {
-                layer_off(_LOWER);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
+
+        case FAKE_KC_FIRST ... FAKE_KC_LAST:
+            return process_potential_modification_2(mod_state, keycode, record->event.pressed);
+
+#if 0
+        case KC_1 ... KC_0:
+        case KC_BSPC:
+        case KC_COMM ... KC_DOT:
+            return process_potential_modification(mod_state, keycode, record->event.pressed, PMOD_SHIFT);
+
+        case KC_QUOT:
+            if ((mod_state & MOD_BIT(KC_RALT)) == 0) {
+                // No altgr, process as is
+                return process_potential_modification(mod_state, keycode, record->event.pressed, PMOD_SHIFT);
+            }  else if ((mod_state & MOD_MASK_CS) == 0) {
+                // Altgr, and no ctrl, no shift
+                return process_potential_modification(mod_state, keycode, record->event.pressed, PMOD_ALTGR);
             }
-            return false;
-        case KC_RAISE:
-            if (record->event.pressed) {
-                layer_on(_RAISE);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-            } else {
-                layer_off(_RAISE);
-                update_tri_layer(_LOWER, _RAISE, _ADJUST);
-            }
-            return false;
-            #endif
+            break;
+
+#endif
+
+        case SEQ_NTILDE:
+        case SEQ_INV_QUESTION:
+            return process_fake_symbols(mod_state, keycode, record->event.pressed);
+
         case KC_ADJUST:
             if (record->event.pressed) {
                 layer_on(_ADJUST);
@@ -58,6 +67,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 layer_off(_ADJUST);
             }
             return false;
+
+#if 0
         case KC_PRVWD:
             if (record->event.pressed) {
                 if (keymap_config.swap_lctl_lgui) {
@@ -179,39 +190,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-            /* Smart Backspace Delete */
-
-        case KC_RSFT:
-        case KC_LSFT:
-            shift_held = record->event.pressed;
-            held_shift = keycode;
-            break;
-        case KC_BSPC_DEL:
-            if (record->event.pressed) {
-                if (shift_held) {
-                    unregister_code(held_shift);
-                    register_code(KC_DEL);
-                } else {
-                    register_code(KC_BSPC);
-                }
-            } else {
-                unregister_code(KC_DEL);
-                unregister_code(KC_BSPC);
-                if (shift_held) {
-                    register_code(held_shift);
-                }
-            }
-            return false;
-
-
-        case KC_LCTL:
-        case KC_RCTL:
-            if (record->event.pressed) {
-                isSneaking = true;
-            } else {
-                isSneaking = false;
-            }
-            break;
         case KC_SPC:
             if (record->event.pressed) {
                 isJumping  = true;
@@ -222,8 +200,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             break;
 
             /* KEYBOARD PET STATUS END */
+#endif
     }
     return true;
 }
-
-

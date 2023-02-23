@@ -30,11 +30,6 @@ static const char PROGMEM windows_logo[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 
 static const char PROGMEM mac_logo[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc0, 0xf0, 0xf8, 0xf8, 0xf8, 0xf0, 0xf6, 0xfb, 0xfb, 0x38, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x07, 0x0f, 0x1f, 0x1f, 0x0f, 0x0f, 0x1f, 0x1f, 0x0f, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-/* Smart Backspace Delete */
-
-bool            shift_held = false;
-static uint16_t held_shift = 0;
-
 /* KEYBOARD PET START */
 
 /* settings */
@@ -190,6 +185,19 @@ static void print_logo_narrow(void) {
     oled_write(" wpm", false);
 }
 
+void print_layer_state(const uint8_t x,
+                       const uint8_t y,
+                       const layer_state_t ls,
+                       const bool flag,
+                       const char undef_str[],
+                       const char* strs[])
+{
+    oled_set_cursor(x, y);
+    const uint16_t lnum = get_highest_layer(ls);
+    const char* const str = (lnum <= _ADJUST) ? strs[lnum] : undef_str;
+    oled_write(str, flag);
+}
+
 static void print_status_narrow(void) {
     /* Print current mode */
     oled_set_cursor(0, 0);
@@ -199,45 +207,15 @@ static void print_status_narrow(void) {
         oled_write_raw_P(windows_logo, sizeof(windows_logo));
     }
 
-    oled_set_cursor(0, 3);
-
-    switch (get_highest_layer(default_layer_state)) {
-        case _QWERTY:
-            oled_write("QWRTY", false);
-            break;
-        case _QWERTY_LA:
-            oled_write("LA", false);
-            break;
-        default:
-            oled_write("UNDEF", false);
-    }
+    static const char* uc_strs[] = {"QWRTY", " LA  ", "COLMK", "X    ", "Y    ", "Z    "};
+    print_layer_state(0, 3, default_layer_state, false, "UNDEF", uc_strs);
 
     oled_set_cursor(0, 5);
-
     /* Print current layer */
     oled_write("LAYER", false);
 
-    oled_set_cursor(0, 6);
-
-    switch (get_highest_layer(layer_state)) {
-        case _QWERTY:
-            oled_write("Base ", false);
-            break;
-        case _QWERTY_LA:
-            oled_write("LA", false);
-            break;
-        case _RAISE:
-            oled_write("Raise", false);
-            break;
-        case _LOWER:
-            oled_write("Lower", false);
-            break;
-        case _ADJUST:
-            oled_write("Adj  ", false);
-            break;
-        default:
-            oled_write("Undef", false);
-    }
+    static const char* lc_strs[] = {"qwrty", " la  ", "colmk", "lower", "raise", "adjst"};
+    print_layer_state(0, 6, layer_state, true, "undef", lc_strs);
 
     /* caps lock */
     oled_set_cursor(0, 8);
@@ -254,6 +232,7 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_
 
 bool oled_task_user(void) {
     /* KEYBOARD PET VARIABLES START */
+    isSneaking = get_mods() & MOD_MASK_CTRL;
 
     current_wpm   = get_current_wpm();
     led_usb_state = host_keyboard_led_state();
