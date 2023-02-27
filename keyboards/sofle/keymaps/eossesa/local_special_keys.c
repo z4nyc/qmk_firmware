@@ -18,44 +18,57 @@
 #include "local_special_keys.h"
 #include "local_layers.h"
 
-uint16_t get_actual_keycode(const uint8_t index, const uint8_t column) {
+uint16_t get_fake_en_us_keymap(const uint8_t index, const uint8_t column) {
     static const uint16_t fake_keys_results[FAKE_KC_COUNT][3] = {
-        // FAKE_KEY                 UNMOD       SHIFT           ALTGR
-        /* FAKE_0            */ {   KC_0,       KC_EQUAL,       KC_TRNS     },
-        /* FAKE_1            */ {   KC_1,       KC_1 /**/,      KC_TRNS     },
-        /* FAKE_2            */ {   KC_2,       KC_QUOTE /**/,  KC_2 /**/   },
-        /* FAKE_3            */ {   KC_3,       KC_3 /**/,      KC_TRNS     },
+        // FAKE KEYCODE             UNMOD           SHIFT           ALTGR
+        /* F_ES_0            */ {   KC_0,           KC_EQUAL,       KC_TRNS     },
+        /* F_ES_1            */ {   KC_1,           KC_1 /**/,      KC_TRNS     },
+        /* F_ES_2            */ {   KC_2,           KC_QUOTE /**/,  KC_2 /**/   },
+        /* F_ES_3            */ {   KC_3,           KC_3 /**/,      KC_TRNS     },
 
-        /* FAKE_4            */ {   KC_4,       KC_4 /**/,      KC_TRNS     },
-        /* FAKE_5            */ {   KC_5,       KC_5 /**/,      KC_TRNS     },
-        /* FAKE_6            */ {   KC_6,       KC_7 /**/,      KC_TRNS     },
-        /* FAKE_7            */ {   KC_7,       KC_SLASH,       KC_TRNS     },
+        /* F_ES_4            */ {   KC_4,           KC_4 /**/,      KC_TRNS     },
+        /* F_ES_5            */ {   KC_5,           KC_5 /**/,      KC_TRNS     },
+        /* F_ES_6            */ {   KC_6,           KC_7 /**/,      KC_TRNS     },
+        /* F_ES_7            */ {   KC_7,           KC_SLASH,       KC_TRNS     },
 
-        /* FAKE_8            */ {   KC_8,       KC_9 /**/,      KC_TRNS     },
-        /* FAKE_9            */ {   KC_9,       KC_0 /**/,      KC_TRNS     },
-        /* FAKE_COMM         */ {   KC_COMM,    KC_SCLN,        KC_TRNS     },
-        /* FAKE_DOT          */ {   KC_DOT,     KC_SCLN /**/,   KC_TRNS     },
+        /* F_ES_8            */ {   KC_8,           KC_9 /**/,      KC_TRNS     },
+        /* F_ES_9            */ {   KC_9,           KC_0 /**/,      KC_TRNS     },
+        /* F_ES_COMM         */ {   KC_COMM,        KC_SCLN,        KC_TRNS     },
+        /* F_ES_DOT          */ {   KC_DOT,         KC_SCLN /**/,   KC_TRNS     },
 
-        /* FAKE_Q            */ {   KC_Q,       KC_Q /**/,      KC_2 /**/   },
-        /* FAKE_BSPC         */ {   KC_BSPC,    KC_DEL,         KC_TRNS     },
-        /* FAKE_QUOT         */ {   KC_QUOT,    KC_SLASH /**/,  KC_BSLS     },
+        /* F_ES_Q            */ {   KC_Q,           KC_Q /**/,      KC_2 /**/   },
+        /* F_CM_BSPC         */ {   KC_BSPC,        KC_DEL,         KC_TRNS     },
+        /* F_CM_LEFT         */ {   KC_LEFT,        KC_TRNS,        KC_HOME     },
+        /* F_CM_RGHT         */ {   KC_RGHT,        KC_TRNS,        KC_END      },
+
+        /* F_KS_QUOT         */ {   KC_QUOT,        KC_SLASH /**/,  KC_BSLS     },
+        /* F_KS_LT           */ {   KC_COMM /**/,   KC_DOT /**/,    KC_TRNS     },
+        /* F_KS_ACUT         */ {   KC_QUOT,        KC_TRNS,        KC_TRNS     }, /* on unmod: circumflex accent dead key; on shift ¨ dead key */
+        /* F_KS_PLUS         */ {   KC_EQUAL /**/,  KC_8 /**/,      KC_GRV /**/  },
+
+        /* F_KS_LCUB         */ {   KC_LBRC /**/,   KC_LBRC,        KC_6 /**/   }, /* on altgr: ^ dead key */
+        /* F_KS_RCUB         */ {   KC_RBRC /**/,   KC_RBRC,        KC_GRV      }, /* on altgr: ` dead key */
+
     };
 
     return fake_keys_results[index][column];
 }
 
-bool get_fake_key_shift_status(const uint8_t index, const uint8_t column) {
-    static const uint16_t fake_keys_shift_status[3] = {
-        /* UNMOD */ 0b000000000000000,
-        /* SHIFT */ 0b101101101111110,
-        /* ALTGR */ 0b001000000000100,
+bool get_fake_key_en_us_shift_status(const uint8_t index, const uint8_t column) {
+    static const uint8_t fake_keys_shift_status[1 + (FAKE_KC_COUNT - 1) / 8][3] = {
+        // FAKE_KEY                 UNMOD           SHIFT           ALTGR
+        /* _7    ... _0    */   {   0b00000000,     0b01111110,     0b00000100, },
+        /* _RGHT ... _8    */   {   0b00000000,     0b00011011,     0b00010000, },
+        /* _RCUB ... _QUOT */   {     0b111010,       0b001011,       0b011000, },
     };
 
-    return (fake_keys_shift_status[column] & (1 << index)) ? true : false;
+    const uint8_t row_index = index / 8;
+    const uint8_t bit_index = index % 8;
+    return (fake_keys_shift_status[row_index][column] & (1 << bit_index)) ? true : false;
 }
 
 uint8_t get_index_for_fake_keycode(const uint16_t keycode) {
-    return keycode - FAKE_KC_FIRST;
+    return keycode - F_ES_KC_FIRST;
 }
 
 // Will implement a different behavior for the given keycode when a modifier
@@ -63,7 +76,7 @@ uint8_t get_index_for_fake_keycode(const uint16_t keycode) {
 // This function is strongly based on the procedure to emit KC_DEL when
 // shift + KC_BSPS is pressed in the documentation.
 // https://docs.qmk.fm/#/feature_advanced_keycodes?id=shift-backspace-for-delete
-bool process_potential_modification_2(const uint8_t mod_state,
+bool process_potential_modification(const uint8_t mod_state,
                                     const uint16_t keycode,
                                     const bool is_pressed) {
     // Initialize a boolean variable that keeps track
@@ -80,8 +93,7 @@ bool process_potential_modification_2(const uint8_t mod_state,
 
     const uint8_t index = get_index_for_fake_keycode(keycode);
     const uint8_t column = is_altgr ? 2 : (is_shift ? 1 : 0);
-    const uint16_t actual_keycode = get_actual_keycode(index, column);
-    // const uint16_t actual_keycode = fake_keys_results[index][column];
+    const uint16_t actual_keycode = get_fake_en_us_keymap(index, column);
 
     if (actual_keycode == KC_TRNS) {
         // Nothing to do.
@@ -91,9 +103,6 @@ bool process_potential_modification_2(const uint8_t mod_state,
     const uint16_t bit_index = (1 << index);
 
     if (!is_pressed) {
-        oled_set_cursor(0, 14);
-        oled_write("ooooo", true);
-
         // On release of keycode, in case the altered keycode is still being sent.
         unregister_code(actual_keycode);
         if (registered_shifts & bit_index) {
@@ -104,7 +113,7 @@ bool process_potential_modification_2(const uint8_t mod_state,
         return true;
     }
 
-    const bool needs_shift = get_fake_key_shift_status(index, column);
+    const bool needs_shift = get_fake_key_en_us_shift_status(index, column);
     const uint16_t all_masks = MOD_MASK_SHIFT | MOD_BIT(KC_RALT);
 
     if (is_shift) {
@@ -146,41 +155,201 @@ bool process_potential_modification_2(const uint8_t mod_state,
     return true;
 }
 
-bool process_fake_symbols(const uint8_t mod_state, const uint16_t keycode, const bool is_pressed) {
+#if 0
+uint16_t get_fake_to_es_la_keycode(const uint8_t index) {
+    static const uint16_t fake_to_es_keymap[3] = {
+        /* F_KS_LT              */ KC_NUBS,
+        /* F_KS_QUOT            */ ES_QUOT,
+        /* F_KS_ACUT            */ KC_LBRC,
+    };
+
+    return fake_to_es_keymap[index];
+}
+
+uint16_t get_fake_es_la_keymap(const uint8_t index, const uint8_t column) {
+    static const uint16_t fake_keys_results[F_KS_KC_POST_LAST - F_KS_KC_FIRST][3] = {
+        /* F_KS_LT           */ {   KC_NUBS /**/,   KC_NUBS /*s*/,  KC_TRNS      },
+        /* F_KS_QUOT         */ {   KC_MINS /**/,   KC_MINS /*s*/,  KC_BSLS/*a*/ },
+        /* F_KS_ACUT         */ {   KC_LBRC /**/,   KC_LBRC /*s*/,  KC_4/*a*/    },
+        /* F_KS_PLUS         */ {   KC_RBRC /**/,   KC_RBRC /*s*/,  KC_RBRC/*a*/ },
+        /* F_KS_LCUB         */ {   ES_ACUT /*a*/,  KC_LBRC /*a*/,  KC_LBRC/*s*/ },
+        /* F_KS_RCUB         */ {   ES_CCED /*a*/,  ES_PLUS /*a*/,  ES_GRV      },
+    };
+
+    return fake_keys_results[index][column];
+}
+
+uint8_t get_fake_key_en_la_mod_status(const uint8_t index, const uint8_t column) {
+    static const uint8_t fake_keys_shift_status[F_KS_KC_POST_LAST - F_KS_KC_FIRST] = {
+        // FAKE_KEY ... 00: unmodified; 01: shift; 10; altgr; 11: both
+        /* F_KS_LT           */ 0b000000,
+        /* F_KS_QUOT         */ 0b000110,
+        /* F_KS_ACUT         */ 0b000110,
+        /* F_KS_PLUS         */ 0b000110,
+        /* F_KS_LCUB         */ 0b101001,
+        /* F_KS_RCUB         */ 0b101000,
+    };
+
+    return  (fake_keys_shift_status[index] >> (column << 1)) & 0b11;
+    // return ((flags & 0b01) * MOD_BIT(KC_LSFT)) | ((flags >> 1) & 0b01) * MOD_BIT(KC_LALT);
+}
+
+bool traslate_fake_keycode_to_es_la(const uint16_t keycode,
+                                    const bool is_pressed) {
+    const uint16_t actual_keycode = get_fake_to_es_la_keycode(keycode - F_KS_KC_FIRST);
+    if (is_pressed) {
+        register_code(actual_keycode);
+    } else {
+        unregister_code(actual_keycode);
+    }
+
+    return false;
+}
+
+bool process_potential_modification_2(const uint8_t mod_state,
+                                    const uint16_t keycode,
+                                    const bool is_pressed) {
+    if ((default_layer_state & (1 << _ES_LA)) == 0) {
+        return process_potential_modification(mod_state, keycode, is_pressed);
+    }
+
+    return traslate_fake_keycode_to_es_la(keycode, is_pressed);
+}
+
+bool traslate_fake_keycode_to_es_es(const uint8_t mod_state,
+                                    const uint16_t keycode,
+                                    const bool is_pressed) {
+    // Initialize a boolean variable that keeps track
+    // of the shifted status of each candidate key.
+    static uint8_t registered_mods[2];
+
+    const bool is_altgr = (mod_state & MOD_BIT(KC_RALT)) ? true : false;
+    const bool is_shift = (mod_state & MOD_MASK_SHIFT) ? true : false;
+
+    if (is_altgr && is_shift) {
+        // This is not allowed for these keys.
+        return false;
+    }
+
+    const uint8_t index = keycode - F_KS_LCUB;
+    const uint8_t column = is_altgr ? 2 : (is_shift ? 1 : 0);
+    const uint16_t actual_keycode = get_fake_es_la_keymap(index, column);
+    const uint8_t flags = get_fake_key_en_la_mod_status(index, column);
+
+    if (actual_keycode == KC_TRNS) {
+        // Nothing to do.
+        return false;
+    }
+
     if (!is_pressed) {
+        // On release of keycode, in case the altered keycode is still being sent.
+        const uint8_t mask = 0b11 << column;
+        unregister_code(actual_keycode);
+        if (registered_mods[index] & mask) {
+            registered_mods[index] &= ~mask;
+            return false;
+        }
+
         return true;
     }
 
+    const uint16_t req_mods = ((flags & 0b01) * MOD_BIT(KC_LSFT)) | ((flags >> 1) & 0b01) * MOD_BIT(KC_LALT);
+    const uint16_t all_masks = MOD_MASK_SHIFT | MOD_BIT(KC_RALT);
+
+    del_mods(all_masks);
+    set_mods(req_mods);
+    register_code(actual_keycode);
+    set_mods(mod_state);
+
+    register_code(actual_keycode);
+    registered_mods[index] |= (flags << column);
+
+    // Just press the key.
+    return true;
+}
+
+bool process_potential_modification_3(const uint8_t mod_state,
+                                    const uint16_t keycode,
+                                    const bool is_pressed) {
+    if ((default_layer_state & (1 << _ES_LA)) == 0) {
+        return process_potential_modification(mod_state, keycode, is_pressed);
+    }
+
+    return traslate_fake_keycode_to_es_es(mod_state, keycode, is_pressed);
+}
+#endif
+
+bool process_fake_symbols(const uint8_t mod_state, const uint16_t keycode, const bool is_pressed) {
     const bool is_shift = (mod_state & MOD_MASK_SHIFT) ? true : false;
     const bool is_altgr = (mod_state & MOD_BIT(KC_RALT)) ? true : false;
 
-    const uint16_t all_masks = (MOD_MASK_SHIFT | MOD_BIT(KC_RALT));
-    del_mods(all_masks);
+    if (!is_pressed) {
+        //oled_set_cursor(0, 4);
+        //oled_write("_____", false);
+        if (keycode == F_SS_BAR && !is_altgr && !is_shift) {
+            unregister_code(KC_BSLS);
+        }
+        return true;
+    }
+
+    if (is_altgr && is_shift) {
+        return true;
+    }
+
+    del_mods(MOD_MASK_SHIFT);
+    if (is_altgr) {
+        if (keycode != F_SS_BAR) {
+            return false;
+        }
+
+        // F_SS_BAR, on altgr
+        // ¬ ...
+        SEND_STRING(SS_RALT(SS_TAP(X_KP_0)SS_TAP(X_KP_1)SS_TAP(X_KP_7)SS_TAP(X_KP_2)));
+        goto done;
+    }
 
     switch (keycode) {
-        case SEQ_NTILDE:
-            if (!is_altgr) {
-                if (is_shift) {
-                    SEND_STRING(SS_RALT(SS_TAP(X_KP_1)SS_TAP(X_KP_6)SS_TAP(X_KP_5)));
-                } else {
-                    SEND_STRING(SS_RALT(SS_TAP(X_KP_1)SS_TAP(X_KP_6)SS_TAP(X_KP_4)));
-                }
+        case F_SS_NTILDE:
+            if (is_shift) {
+                // capital n-tilde
+                SEND_STRING(SS_RALT(SS_TAP(X_KP_0)SS_TAP(X_KP_2)SS_TAP(X_KP_0)SS_TAP(X_KP_9)));
+            } else {
+                // n-tilde
+                SEND_STRING(SS_RALT(SS_TAP(X_KP_0)SS_TAP(X_KP_2)SS_TAP(X_KP_4)SS_TAP(X_KP_1)));
             }
             break;
 
-        case SEQ_INV_QUESTION:
-            if (!is_altgr) {
-                if (is_shift) {
-                    SEND_STRING(SS_RALT(SS_TAP(X_KP_1)SS_TAP(X_KP_7)SS_TAP(X_KP_3)));
-                } else {
-                    SEND_STRING(SS_RALT(SS_TAP(X_KP_1)SS_TAP(X_KP_6)SS_TAP(X_KP_8)));
-                }
+        case F_SS_INV_QUESTION:
+            //oled_set_cursor(0, 4);
+            if (is_shift) {
+                // starting exclamation
+                //oled_write("exclm", false);
+                SEND_STRING(SS_RALT(SS_TAP(X_KP_0)SS_TAP(X_KP_1)SS_TAP(X_KP_6)SS_TAP(X_KP_1)));
+            } else {
+                // starting interrogation
+                //oled_write("intrr", false);
+                SEND_STRING(SS_RALT(SS_TAP(X_KP_0)SS_TAP(X_KP_1)SS_TAP(X_KP_9)SS_TAP(X_KP_1)));
+            }
+            break;
+
+        case F_SS_BAR:
+            if (is_shift) {
+                // °
+                SEND_STRING(SS_RALT(SS_TAP(X_KP_0)SS_TAP(X_KP_1)SS_TAP(X_KP_7)SS_TAP(X_KP_6)));
+            } else {
+                // |
+                set_mods(MOD_BIT(KC_LSFT));
+                register_code(KC_BSLS);
+                del_mods(MOD_BIT(KC_LSFT));
+                return true;
             }
             break;
 
         default:
             break;
     }
+
+done:
     set_mods(mod_state);
     return false;
 }

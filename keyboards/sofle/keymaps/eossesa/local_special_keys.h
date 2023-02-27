@@ -30,11 +30,6 @@ enum potential_modifiers {
 
 bool process_potential_modification(const uint8_t mod_state,
                                     const uint16_t keycode,
-                                    const bool is_pressed,
-                                    const uint8_t pmod);
-
-bool process_potential_modification_2(const uint8_t mod_state,
-                                    const uint16_t keycode,
                                     const bool is_pressed);
 
 bool process_fake_symbols(const uint8_t mod_state,

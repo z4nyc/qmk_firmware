@@ -18,9 +18,23 @@
 
 #ifdef ENCODER_ENABLE
 
+const uint16_t get_encoder0_keycode(const bool clockwise) {
+    const uint16_t lnum = get_highest_layer(layer_state);
+    if (lnum == _RAISE) {
+        // mouse horizontal wheel.
+        return clockwise ? KC_WH_L : KC_WH_R;
+    }
+
+    return clockwise ? KC_BRIU : KC_BRID;
+}
+
+const uint16_t get_encoder1_keycode(const bool clockwise) {
+    return clockwise ? KC_VOLU : KC_VOLD;
+}
+
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    const uint16_t k = (index == 0) ? (clockwise ? KC_BRIU : KC_BRID) :
-                                      (clockwise ? KC_VOLU : KC_VOLD);
+    const uint16_t k = (index == 0) ? get_encoder0_keycode(clockwise) :
+                                      get_encoder1_keycode(clockwise);
     tap_code(k);
 
     return true;

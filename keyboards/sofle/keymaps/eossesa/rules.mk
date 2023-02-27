@@ -1,11 +1,12 @@
 OLED_ENABLE = yes
 OLED_DRIVER = SSD1306
 ENCODER_ENABLE = yes
-CONSOLE_ENABLE = no
 EXTRAKEY_ENABLE = yes
+MOUSEKEY_ENABLE = yes
 
 ## to allow space cadet shift
 COMMAND_ENABLE = no
+CONSOLE_ENABLE = no
 
-WPM_ENABLE = yes
+WPM_ENABLE = no
 

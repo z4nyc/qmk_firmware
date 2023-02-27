@@ -171,8 +171,15 @@ static void render_luna(int LUNA_X, int LUNA_Y) {
 static void print_logo_narrow(void) {
     render_logo();
 
+    /* caps/num lock */
+    oled_set_cursor(0, 9);
+    oled_write("CPSLK", led_usb_state.caps_lock);
+    oled_set_cursor(0, 11);
+    oled_write("NUMLK", led_usb_state.num_lock);
+
     /* wpm counter */
-    uint8_t n = get_current_wpm();
+    //uint8_t n = get_current_wpm();
+    uint8_t n = 0;
     char    wpm_str[4];
     oled_set_cursor(0, 14);
     wpm_str[3] = '\0';
@@ -187,13 +194,12 @@ static void print_logo_narrow(void) {
 
 void print_layer_state(const uint8_t x,
                        const uint8_t y,
-                       const layer_state_t ls,
+                       const uint16_t lnum,
                        const bool flag,
                        const char undef_str[],
-                       const char* strs[])
+                       const char* const strs[])
 {
     oled_set_cursor(x, y);
-    const uint16_t lnum = get_highest_layer(ls);
     const char* const str = (lnum <= _ADJUST) ? strs[lnum] : undef_str;
     oled_write(str, flag);
 }
@@ -207,19 +213,20 @@ static void print_status_narrow(void) {
         oled_write_raw_P(windows_logo, sizeof(windows_logo));
     }
 
-    static const char* uc_strs[] = {"QWRTY", " LA  ", "COLMK", "X    ", "Y    ", "Z    "};
-    print_layer_state(0, 3, default_layer_state, false, "UNDEF", uc_strs);
+    print_layer_state(0, 3, get_highest_layer(default_layer_state), false, uc_undef, uc_layer_names);
 
     oled_set_cursor(0, 5);
     /* Print current layer */
     oled_write("LAYER", false);
 
-    static const char* lc_strs[] = {"qwrty", " la  ", "colmk", "lower", "raise", "adjst"};
-    print_layer_state(0, 6, layer_state, true, "undef", lc_strs);
+    print_layer_state(0, 6, get_highest_layer(layer_state), true, lc_undef, lc_layer_names);
 
-    /* caps lock */
-    oled_set_cursor(0, 8);
+    /* caps/num lock */
+    oled_set_cursor(0, 9);
     oled_write("CPSLK", led_usb_state.caps_lock);
+    oled_set_cursor(0, 11);
+    oled_write("NUMLK", led_usb_state.num_lock);
+
 
     /* KEYBOARD PET RENDER START */
 
@@ -234,7 +241,7 @@ bool oled_task_user(void) {
     /* KEYBOARD PET VARIABLES START */
     isSneaking = get_mods() & MOD_MASK_CTRL;
 
-    current_wpm   = get_current_wpm();
+    // current_wpm   = get_current_wpm();
     led_usb_state = host_keyboard_led_state();
 
     /* KEYBOARD PET VARIABLES END */

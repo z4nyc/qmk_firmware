@@ -25,173 +25,73 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     const uint8_t mod_state = get_mods();
+    const bool is_pressed = record->event.pressed;
+    static uint8_t numpad_caller = _NUMPAD;
+    const uint8_t current_layer_state = get_highest_layer(default_layer_state);
 
     switch (keycode) {
-        case KC_QWERTY ... KC_COLEMAK:
-            if (record->event.pressed) {
-                set_single_persistent_default_layer(keycode_to_layer[keycode - KC_QWERTY]);
+        // case LAYER_KC_ES_LA:
+        case LAYER_KC_EN_US:
+            if (is_pressed) {
+                set_single_persistent_default_layer(keycode - LAYER_KC_FIRST);
             }
             return false;
 
-        case FAKE_KC_FIRST ... FAKE_KC_LAST:
-            return process_potential_modification_2(mod_state, keycode, record->event.pressed);
+        case LAYER_KC_NUMPAD:
+            if (is_pressed) {
+                numpad_caller = current_layer_state;
+                set_single_persistent_default_layer(_NUMPAD);
+                register_code(KC_NUM);
+            } else {
+                unregister_code(KC_NUM);
+            }
+            return false;
+
+        case LAYER_KC_NUMPAD_CALLER:
+            if (is_pressed) {
+                set_single_persistent_default_layer(numpad_caller);
+                register_code(KC_NUM);
+            } else {
+                unregister_code(KC_NUM);
+            }
+            return false;
 
 #if 0
-        case KC_1 ... KC_0:
-        case KC_BSPC:
-        case KC_COMM ... KC_DOT:
-            return process_potential_modification(mod_state, keycode, record->event.pressed, PMOD_SHIFT);
+        case F_ES_KC_FIRST ... F_ES_KC_LAST:
+        case F_CM_KC_FIRST ... F_CM_KC_LAST:
+            return process_potential_modification(mod_state, keycode, is_pressed);
 
-        case KC_QUOT:
-            if ((mod_state & MOD_BIT(KC_RALT)) == 0) {
-                // No altgr, process as is
-                return process_potential_modification(mod_state, keycode, record->event.pressed, PMOD_SHIFT);
-            }  else if ((mod_state & MOD_MASK_CS) == 0) {
-                // Altgr, and no ctrl, no shift
-                return process_potential_modification(mod_state, keycode, record->event.pressed, PMOD_ALTGR);
+        case F_KS_KC_FIRST ... F_KS_ACUT:
+            return process_potential_modification_2(mod_state, keycode, is_pressed);
+
+        case F_KS_PLUS ... F_KS_RCUB:
+            if (current_layer_state == _ES_LA) {
+                return process_potential_modification_3(mod_state, keycode, is_pressed);
+            } else {
+                return process_potential_modification(mod_state, keycode, is_pressed);
             }
-            break;
-
 #endif
+        case F_ES_KC_FIRST ... F_ES_KC_LAST:
+        case F_CM_KC_FIRST ... F_CM_KC_LAST:
+        case F_KS_KC_FIRST ... F_KS_KC_LAST:
+            return process_potential_modification(mod_state, keycode, is_pressed);
 
-        case SEQ_NTILDE:
-        case SEQ_INV_QUESTION:
-            return process_fake_symbols(mod_state, keycode, record->event.pressed);
+        case F_SS_KC_FIRST ... F_SS_KC_LAST:
+            return process_fake_symbols(mod_state, keycode, is_pressed);
 
-        case KC_ADJUST:
-            if (record->event.pressed) {
+        case LAYER_KC_ADJUST:
+            if (is_pressed) {
                 layer_on(_ADJUST);
             } else {
                 layer_off(_ADJUST);
             }
             return false;
 
-#if 0
-        case KC_PRVWD:
-            if (record->event.pressed) {
-                if (keymap_config.swap_lctl_lgui) {
-                    register_mods(mod_config(MOD_LALT));
-                    register_code(KC_LEFT);
-                } else {
-                    register_mods(mod_config(MOD_LCTL));
-                    register_code(KC_LEFT);
-                }
-            } else {
-                if (keymap_config.swap_lctl_lgui) {
-                    unregister_mods(mod_config(MOD_LALT));
-                    unregister_code(KC_LEFT);
-                } else {
-                    unregister_mods(mod_config(MOD_LCTL));
-                    unregister_code(KC_LEFT);
-                }
-            }
-            break;
-        case KC_NXTWD:
-            if (record->event.pressed) {
-                if (keymap_config.swap_lctl_lgui) {
-                    register_mods(mod_config(MOD_LALT));
-                    register_code(KC_RIGHT);
-                } else {
-                    register_mods(mod_config(MOD_LCTL));
-                    register_code(KC_RIGHT);
-                }
-            } else {
-                if (keymap_config.swap_lctl_lgui) {
-                    unregister_mods(mod_config(MOD_LALT));
-                    unregister_code(KC_RIGHT);
-                } else {
-                    unregister_mods(mod_config(MOD_LCTL));
-                    unregister_code(KC_RIGHT);
-                }
-            }
-            break;
-        case KC_LSTRT:
-            if (record->event.pressed) {
-                if (keymap_config.swap_lctl_lgui) {
-                    /* CMD-arrow on Mac, but we have CTL and GUI swapped */
-                    register_mods(mod_config(MOD_LCTL));
-                    register_code(KC_LEFT);
-                } else {
-                    register_code(KC_HOME);
-                }
-            } else {
-                if (keymap_config.swap_lctl_lgui) {
-                    unregister_mods(mod_config(MOD_LCTL));
-                    unregister_code(KC_LEFT);
-                } else {
-                    unregister_code(KC_HOME);
-                }
-            }
-            break;
-        case KC_LEND:
-            if (record->event.pressed) {
-                if (keymap_config.swap_lctl_lgui) {
-                    /* CMD-arrow on Mac, but we have CTL and GUI swapped */
-                    register_mods(mod_config(MOD_LCTL));
-                    register_code(KC_RIGHT);
-                } else {
-                    register_code(KC_END);
-                }
-            } else {
-                if (keymap_config.swap_lctl_lgui) {
-                    unregister_mods(mod_config(MOD_LCTL));
-                    unregister_code(KC_RIGHT);
-                } else {
-                    unregister_code(KC_END);
-                }
-            }
-            break;
-        case KC_DLINE:
-            if (record->event.pressed) {
-                register_mods(mod_config(MOD_LCTL));
-                register_code(KC_BSPC);
-            } else {
-                unregister_mods(mod_config(MOD_LCTL));
-                unregister_code(KC_BSPC);
-            }
-            break;
-        case KC_COPY:
-            if (record->event.pressed) {
-                register_mods(mod_config(MOD_LCTL));
-                register_code(KC_C);
-            } else {
-                unregister_mods(mod_config(MOD_LCTL));
-                unregister_code(KC_C);
-            }
-            return false;
-        case KC_PASTE:
-            if (record->event.pressed) {
-                register_mods(mod_config(MOD_LCTL));
-                register_code(KC_V);
-            } else {
-                unregister_mods(mod_config(MOD_LCTL));
-                unregister_code(KC_V);
-            }
-            return false;
-        case KC_CUT:
-            if (record->event.pressed) {
-                register_mods(mod_config(MOD_LCTL));
-                register_code(KC_X);
-            } else {
-                unregister_mods(mod_config(MOD_LCTL));
-                unregister_code(KC_X);
-            }
-            return false;
-            break;
-        case KC_UNDO:
-            if (record->event.pressed) {
-                register_mods(mod_config(MOD_LCTL));
-                register_code(KC_Z);
-            } else {
-                unregister_mods(mod_config(MOD_LCTL));
-                unregister_code(KC_Z);
-            }
-            return false;
-
         case KC_SPC:
-            if (record->event.pressed) {
+            if (is_pressed) {
                 isJumping  = true;
                 showedJump = false;
             } else {
@@ -199,8 +99,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             break;
 
-            /* KEYBOARD PET STATUS END */
-#endif
     }
     return true;
 }

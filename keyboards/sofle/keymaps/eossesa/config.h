@@ -22,15 +22,21 @@
 //#define ENCODER_RESOLUTION 4
 //#endif
 
-#ifdef TAPPING_TERM
-#undef TAPPING_TERM
-#define TAPPING_TERM 250
-#endif
+//#ifdef TAPPING_TERM
+//#undef TAPPING_TERM
+//#define TAPPING_TERM 250
+//#endif
+
+// handness controlled by eeprom. to facilitate uploading firmware on both halves.
+// flashing commands:
+//   - qmk flash -kb sofle/rev1 -km eossesa -bl avrdude-split-left
+//   - qmk flash -kb sofle/rev1 -km eossesa -bl avrdude-split-right
+#define EE_HANDS
 
 #define OLED_TIMEOUT 120000
 #define OLED_BRIGHTNESS 120
 
-
+#if 0
 // space cadet configuration
 #if defined(LSPO_KEYS) || defined(RSPC_KEYS) || defined(LCPO_KEYS) || defined(RCPC_KEYS) || defined(LAPO_KEYS) || defined(RAPC_KEYS)
   #error "neither of these keys must be defined yet"
@@ -46,4 +52,6 @@
   // alt keys: {}
   #define LAPO_KEYS KC_LEFT_ALT,  KC_LEFT_SHIFT,  KC_LBRC
   #define RAPC_KEYS KC_RIGHT_ALT, KC_RIGHT_SHIFT, KC_RBRC
+#endif
+
 #endif
