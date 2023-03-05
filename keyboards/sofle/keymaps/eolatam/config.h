@@ -36,6 +36,9 @@
 #define OLED_TIMEOUT 120000
 #define OLED_BRIGHTNESS 120
 
+#define SPLIT_LED_STATE_ENABLE
+#define SPLIT_LAYER_STATE_ENABLE
+
 #if 0
 // space cadet configuration
 #if defined(LSPO_KEYS) || defined(RSPC_KEYS) || defined(LCPO_KEYS) || defined(RCPC_KEYS) || defined(LAPO_KEYS) || defined(RAPC_KEYS)

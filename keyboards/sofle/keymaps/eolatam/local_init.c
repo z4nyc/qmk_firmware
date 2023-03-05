@@ -14,12 +14,9 @@
   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
   */
 
-#pragma once
+#include QMK_KEYBOARD_H
+#include "local_init.h"
+#include "local_oled.h"
 
-#ifdef OLED_ENABLE
-
-bool local_oled_task_user(void);
-void init_oled(void);
-
-#endif
+local_status_t my_local_status = {._is_master = false, ._is_left = false};
 

@@ -16,30 +16,11 @@
 
 #pragma once
 
-#include "local_enums.h"
+typedef struct local_status_s {
+    bool _is_master : 1;
+    bool _is_left : 1;
+} local_status_t;
 
-#ifdef ENCODER_ENABLE
+extern local_status_t my_local_status;
 
-const uint16_t get_encoder0_keycode(const bool clockwise) {
-    const uint16_t lnum = get_highest_layer(layer_state);
-    if (lnum == _RAISE_ES_LA || lnum == _RAISE_EN_US) {
-        // mouse horizontal wheel.
-        return clockwise ? KC_WH_L : KC_WH_R;
-    }
 
-    return clockwise ? KC_BRIU : KC_BRID;
-}
-
-const uint16_t get_encoder1_keycode(const bool clockwise) {
-    return clockwise ? KC_VOLU : KC_VOLD;
-}
-
-bool encoder_update_user(uint8_t index, bool clockwise) {
-    const uint16_t k = (index == 0) ? get_encoder0_keycode(clockwise) :
-                                      get_encoder1_keycode(clockwise);
-    tap_code(k);
-
-    return true;
-}
-
-#endif

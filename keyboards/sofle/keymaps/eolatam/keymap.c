@@ -16,19 +16,16 @@
 
 #include QMK_KEYBOARD_H
 
-#include "local_layers.h"
-#include "local_special_keys.h"
 #include "local_encoder.h"
+#include "local_enums.h"
+#include "local_init.h"
+#include "local_layers.h"
 #include "local_oled.h"
+#include "local_special_keys.h"
 
+uint8_t current_raise_layer = _RAISE_ES_LA;
 layer_state_t layer_state_set_user(layer_state_t state) {
-#if 1
-    return update_tri_layer_state(state, _LOWER, _RAISE_ES_LA, _ADJUST);
-#else
-    state = update_tri_layer_state(state, _LOWER, _RAISE_ES_LA, _ADJUST);
-    state = update_tri_layer_state(state, _LOWER, _RAISE_EN_US, _ADJUST);
-    return state;
-#endif
+    return update_tri_layer_state(state, _LOWER, current_raise_layer, _ADJUST);
 }
 
 
@@ -44,7 +41,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LAYER_KC_ES_LA:
         case LAYER_KC_EN_US:
             if (is_pressed) {
-                set_single_persistent_default_layer(keycode - LAYER_KC_FIRST);
+                const uint8_t delta = keycode - LAYER_KC_ES_LA;
+                set_single_persistent_default_layer(_ES_LA + delta);
+                current_raise_layer = _RAISE_ES_LA + delta;
             }
             return false;
 
@@ -69,21 +68,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-#if 0
-        case F_ES_KC_FIRST ... F_ES_KC_LAST:
-        case F_CM_KC_FIRST ... F_CM_KC_LAST:
-            return process_potential_modification(mod_state, keycode, is_pressed);
-
-        case F_KS_KC_FIRST ... F_KS_ACUT:
-            return process_potential_modification_2(mod_state, keycode, is_pressed);
-
-        case F_KS_PLUS ... F_KS_RCUB:
-            if (current_layer_state == _ES_LA) {
-                return process_potential_modification_3(mod_state, keycode, is_pressed);
-            } else {
-                return process_potential_modification(mod_state, keycode, is_pressed);
-            }
-#endif
         case F_ES_KC_FIRST ... F_ES_KC_LAST:
         case F_CM_KC_FIRST ... F_CM_KC_LAST:
         case F_KS_KC_FIRST ... F_KS_KC_LAST:
@@ -92,15 +76,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case F_SS_KC_FIRST ... F_SS_KC_LAST:
             return process_fake_symbols(mod_state, keycode, is_pressed);
 
-#if 0
-        case LAYER_KC_ADJUST:
-            if (is_pressed) {
-                layer_on(_ADJUST);
-            } else {
-                layer_off(_ADJUST);
-            }
-            return false;
-#endif
     }
     return true;
 }
+
+#ifdef OLED_ENABLE
+
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+    return OLED_ROTATION_270;
+}
+
+bool oled_task_user(void) {
+    return local_oled_task_user();
+}
+
+#endif
+
+void keyboard_post_init_user(void) {
+    my_local_status._is_master = is_keyboard_master();
+    my_local_status._is_left = is_keyboard_left();
+
+    local_init_oled();
+}
+

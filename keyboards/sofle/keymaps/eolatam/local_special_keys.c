@@ -16,7 +16,7 @@
 #include QMK_KEYBOARD_H
 
 #include "local_special_keys.h"
-#include "local_layers.h"
+#include "local_enums.h"
 
 uint16_t get_fake_en_us_simulating_es_la(const uint8_t index, const uint8_t column) {
     static const uint16_t key_index_to_keycode_set[FAKE_KC_COUNT][3] = {

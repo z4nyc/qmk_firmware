@@ -36,4 +36,7 @@ bool process_fake_symbols(const uint8_t mod_state,
                           const uint16_t keycode,
                           const bool is_pressed);
 
-#include "local_special_keys.c"
+bool simulate_es_la_on_en_us_key_stroke(const uint8_t mod_state,
+                                    	const uint16_t keycode,
+                                    	const bool is_pressed);
+
