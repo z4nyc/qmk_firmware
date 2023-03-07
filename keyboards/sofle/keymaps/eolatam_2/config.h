@@ -31,7 +31,7 @@
 // flashing commands:
 //   - qmk flash -kb sofle/rev1 -km eossesa -bl avrdude-split-left
 //   - qmk flash -kb sofle/rev1 -km eossesa -bl avrdude-split-right
-#define EE_HANDS
+//#define EE_HANDS
 
 #define OLED_TIMEOUT 120000
 #define OLED_BRIGHTNESS 120

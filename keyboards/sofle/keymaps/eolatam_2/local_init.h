@@ -16,10 +16,11 @@
 
 #pragma once
 
-#ifdef OLED_ENABLE
+typedef struct local_status_s {
+    bool _is_master : 1;
+    bool _is_left : 1;
+} local_status_t;
 
-bool local_oled_task_user(void);
-void local_init_oled(void);
+extern local_status_t my_local_status;
 
-#endif
 
