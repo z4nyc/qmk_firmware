@@ -40,7 +40,7 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] PROGMEM = {
  */
 
 [_ES_LA] = LAYOUT(
-  QK_GESC,   ES_1,   ES_2,    ES_3,    ES_4,    ES_5,                        ES_6,    ES_7,    ES_8,    ES_9,    ES_0,  F_CM_BSPS,
+  QK_GESC,   ES_1,   ES_2,    ES_3,    ES_4,    ES_5,                        ES_6,    ES_7,    ES_8,    ES_9,    ES_0,  UUSUT_KC_BSDL,
    KC_TAB,   ES_Q,   ES_W,    ES_E,    ES_R,    ES_T,                        ES_Y,    ES_U,    ES_I,    ES_O,    ES_P,  ES_ACUT,
   KC_CAPS,   ES_A,   ES_S,    ES_D,    ES_F,    ES_G,                        ES_H,    ES_J,    ES_K,    ES_L, ES_NTIL,  ES_LCBR,
   KC_LSFT,   ES_Z,   ES_X,    ES_C,    ES_V,    ES_B, KC_MPLY,      KC_MUTE, ES_N,    ES_M, ES_COMM,  ES_DOT, ES_MINS,  KC_RSFT,
@@ -64,9 +64,9 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] PROGMEM = {
  */
 
 [_EN_US] = LAYOUT(
-  QK_GESC,   KC_1, UUSST_KC_2,    KC_3,    KC_4,       KC_5,                              UUSST_KC_6, UUSUT_KC_7,    UUSST_KC_8,   UUSST_KC_9, UUSUT_KC_0,  F_CM_BSPS,
-   KC_TAB,   KC_Q,       KC_W,    KC_E,    KC_R,       KC_T,                                    KC_Y,       KC_U,          KC_I,         KC_O,       KC_P,  F_KS_ACUT,
-  KC_CAPS,   KC_A,       KC_S,    KC_D,    KC_F,       KC_G,                                    KC_H,       KC_J,          KC_K,         KC_L,       KC_N,  F_KS_LCUB,
+  QK_GESC,   KC_1, UUSST_KC_2,    KC_3,    KC_4,       KC_5,                              UUSST_KC_6, UUSUT_KC_7,    UUSST_KC_8,   UUSST_KC_9, UUSUT_KC_0,  UUSUT_KC_BSDL,
+   KC_TAB,   KC_Q,       KC_W,    KC_E,    KC_R,       KC_T,                                    KC_Y,       KC_U,          KC_I,         KC_O,       KC_P,  UUSST_KC_ACUT,
+  KC_CAPS,   KC_A,       KC_S,    KC_D,    KC_F,       KC_G,                                    KC_H,       KC_J,          KC_K,         KC_L,       KC_N,  USSUT_KC_LCBR,
   KC_LSFT,   KC_Z,       KC_X,    KC_C,    KC_V,       KC_B, KC_MPLY,  KC_MUTE,                 KC_N,       KC_M, UUSUT_KC_COMM, UUSST_KC_DOT,    KC_MINS,  KC_RSFT,
                       KC_LCTL, KC_LGUI, KC_LALT, MO(_LOWER), KC_SPC,        KC_ENT, MO(_RAISE_EN_US),    KC_RALT,       KC_RGUI,      KC_RCTL
 ),
@@ -89,9 +89,9 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] PROGMEM = {
  */
 
 [_EN_US] = LAYOUT(
-  QK_GESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                        KC_6,    KC_7,      KC_8,      KC_9,        KC_0,  F_CM_BSPS,
-   KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                        KC_Y,    KC_U,      KC_I,      KC_O,        KC_P,  F_KS_ACUT,
-  KC_CAPS,   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                        KC_H,    KC_J,      KC_K,      KC_L, F_SS_NTILDE,  F_KS_LCUB,
+  QK_GESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                        KC_6,    KC_7,      KC_8,      KC_9,        KC_0,  UUSUT_KC_BSDL,
+   KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                        KC_Y,    KC_U,      KC_I,      KC_O,        KC_P,  UUSST_KC_ACUT,
+  KC_CAPS,   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                        KC_H,    KC_J,      KC_K,      KC_L, F_SS_NTILDE,  USSUT_KC_LCBR,
   KC_LSFT,   KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_MPLY,      KC_MUTE, KC_N,    KC_M, F_ES_COMM,  F_ES_DOT,    KC_MINUS,  KC_RSFT,
                   KC_LCTL, KC_LGUI, KC_LALT, MO(_LOWER), KC_SPC,      KC_ENT,  MO(_RAISE_EN_US), KC_RALT, KC_RGUI, KC_RCTL
 ),
@@ -114,10 +114,10 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] PROGMEM = {
  */
 
 [_NUMPAD] = LAYOUT(
-  KC_ESC, XXXXXXX, LAYER_KC_ES_LA, XXXXXXX, XXXXXXX, XXXXXXX,         LAYER_KC_NUMPAD_CALLER, KC_PSLS, KC_PAST, KC_PMNS, XXXXXXX, F_CM_BSPS,
+  KC_ESC, XXXXXXX, LAYER_KC_ES_LA, XXXXXXX, XXXXXXX, XXXXXXX,         LAYER_KC_NUMPAD_CALLER, KC_PSLS, KC_PAST, KC_PMNS, XXXXXXX, UUSUT_KC_BSDL,
   KC_TAB, XXXXXXX, LAYER_KC_EN_US, XXXXXXX, XXXXXXX, XXXXXXX,                          KC_P7,   KC_P8,   KC_P9, KC_PPLS, XXXXXXX, KC_DEL,
   KC_CAPS,XXXXXXX,        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                          KC_P4,   KC_P5,   KC_P6, KC_PPLS, XXXXXXX, XXXXXXX,
-  KC_LSFT,F_KS_LT,        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   KC_MPLY,    KC_MUTE,   KC_P1,   KC_P2,   KC_P3, KC_PENT, XXXXXXX, KC_RSFT,
+  KC_LSFT,XXXXXXX,        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   KC_MPLY,    KC_MUTE,   KC_P1,   KC_P2,   KC_P3, KC_PENT, XXXXXXX, KC_RSFT,
                           KC_LCTL, KC_LGUI, KC_LALT, MO(_LOWER), KC_SPC,     KC_ENT,   KC_P0,   KC_P0, KC_PDOT,  KC_RCTL
 ),
 
@@ -158,7 +158,7 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] PROGMEM = {
  *            `----------------------------------'           '------''---------------------------'
  */
 [_RAISE_ES_LA] = LAYOUT(
-   QK_GESC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                LAYER_KC_NUMPAD,   XXXXXXX, XXXXXXX, XXXXXXX, F_KS_QUOT, ES_IQUE,
+   QK_GESC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                LAYER_KC_NUMPAD,   XXXXXXX, XXXXXXX, XXXXXXX,   ES_QUOT, ES_IQUE,
      _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                         KC_INS,   KC_PGUP,   KC_UP, KC_PGDN, ES_ACUT, ES_PLUS,
      _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                         KC_DEL,   KC_LEFT, KC_DOWN, KC_RGHT, ES_LCBR, ES_RCBR,
      _______, ES_LABK, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,      _______,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
@@ -180,10 +180,10 @@ const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] PROGMEM = {
  *            `----------------------------------'           '------''---------------------------'
  */
 [_RAISE_EN_US] = LAYOUT(
-  F_SS_BAR, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                LAYER_KC_NUMPAD,   XXXXXXX, XXXXXXX, XXXXXXX, F_KS_QUOT, F_SS_INV_QUESTION,
-     _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                         KC_INS,   KC_PGUP,   KC_UP, KC_PGDN, F_KS_ACUT, F_KS_PLUS,
-     _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                         KC_DEL,   KC_LEFT, KC_DOWN, KC_RGHT, F_KS_LCUB, F_KS_RCUB,
-     _______, F_KS_LT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,      _______,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   XXXXXXX, XXXXXXX,
+  USSUT_KC_PIPE, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                LAYER_KC_NUMPAD,   XXXXXXX, XXXXXXX, XXXXXXX, UUSST_KC_QUOT, USSST_KC_IQUE,
+     _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                         KC_INS,   KC_PGUP,   KC_UP, KC_PGDN, UUSST_KC_ACUT, USSST_KC_PLUS,
+     _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                         KC_DEL,   KC_LEFT, KC_DOWN, KC_RGHT, USSUT_KC_LCBR, USSUT_KC_RCBR,
+     _______, USSST_KC_LABK, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  _______,      _______,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   XXXXXXX, XXXXXXX,
                         _______, _______, _______, _______, _______,      _______, _______, _______, _______, _______
 ),
 /* ADJUST

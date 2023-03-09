@@ -37,12 +37,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     static uint8_t numpad_caller = _NUMPAD;
 
-#define NEW_WAY
-#ifdef NEW_WAY
-#else
-    static bool kc7_is_pressed = false;
-#endif
-
     switch (keycode) {
         case LAYER_KC_ES_LA:
         case LAYER_KC_EN_US:
@@ -74,67 +68,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
-        case F_ES_KC_FIRST ... F_ES_KC_LAST:
-        case F_CM_KC_FIRST ... F_CM_KC_LAST:
-        case F_KS_KC_FIRST ... F_KS_KC_LAST:
-            return simulate_es_la_on_en_us_key_stroke(mod_state, keycode, is_pressed);
-
-        case F_SS_KC_FIRST ... F_SS_KC_LAST:
-            return process_fake_symbols(mod_state, keycode, is_pressed);
-
         case KC_LSFT:
         case KC_RSFT:
-        {
-            bool ok = uusst_kc_operate_on_shift(keycode, is_pressed);
-#ifdef NEW_WAY
-            ok = uusut_kc_operate_on_shift(keycode, is_pressed) && ok;
-#else
-            if (kc7_is_pressed) {
-                if (is_pressed) {
-                    del_mods(MOD_MASK_SHIFT);
-                    register_code(KC_SLSH);
-                    ok == false;
-                } else {
-                    unregister_code(keycode);
-                    unregister_code(KC_SLSH);
-                    register_code(KC_7);
-                    ok == true;
-                }
-            }
-#endif
+            {
+                bool ok = true;
+                mark_shift_pressed(keycode, is_pressed);
+                ok = uusst_kc_operate_on_shift(keycode, is_pressed) && ok;
+                ok = uusut_kc_operate_on_shift(keycode, is_pressed) && ok;
+                ok = ussst_kc_operate_on_shift(keycode, is_pressed) && ok;
+                ok = ussut_kc_operate_on_shift(keycode, is_pressed) && ok;
 
-            return ok;
-        }
-            break;
+                return ok;
+            }
 
         case UUSST_KC_FIRST ... UUSST_KC_LAST:
             return uusst_kc_operate_on_keycode(mod_state, keycode, is_pressed);
 
         case UUSUT_KC_FIRST ... UUSUT_KC_LAST:
-#ifdef NEW_WAY
             return uusut_kc_operate_on_keycode(mod_state, keycode, is_pressed);
-#else
-            if (is_pressed) {
-                kc7_is_pressed = true;
-                if (mod_state & MOD_MASK_SHIFT) {
-                    del_mods(MOD_MASK_SHIFT);
-                    register_code(KC_SLSH);
-                    set_mods(mod_state);
-                    return false;
-                }
 
-                register_code(KC_7);
-            } else {
-                kc7_is_pressed = false;
-                if (mod_state & MOD_MASK_SHIFT) {
-                    unregister_code(KC_SLSH);
-                } else {
-                    unregister_code(KC_7);
-                }
-            }
-            break;
-#endif
+        case USSST_KC_FIRST ... USSST_KC_LAST:
+            return ussst_kc_operate_on_keycode(mod_state, keycode, is_pressed);
 
+        case USSUT_KC_FIRST ... USSUT_KC_LAST:
+            return ussut_kc_operate_on_keycode(mod_state, keycode, is_pressed);
     }
 
     return true;

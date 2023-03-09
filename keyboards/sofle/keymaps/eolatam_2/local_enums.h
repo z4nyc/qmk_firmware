@@ -46,77 +46,18 @@ enum layer_keycodes {
     LAYER_KC_LAST = LAYER_KC_POST_LAST - 1,
 };
 
-// Fake es-la key keycodes.
-// If OS keymap is EN-US, these fake keycodes are mapped to keycodes that mimic the ES-LA keymap.
-// These keycodes make sense only in the _EN_US keymap.
-enum fake_es_keycodes {
-    F_ES_KC_FIRST = LAYER_KC_POST_LAST,
-    F_ES_0 = F_ES_KC_FIRST,
-    F_ES_1,
-    F_ES_2,
-    F_ES_3,
-    F_ES_4,
-    F_ES_5,
-    F_ES_6,
-    F_ES_7,
-    F_ES_8,
-    F_ES_9,
-    F_ES_COMM,
-    F_ES_DOT,
-    F_ES_Q,
-
-    F_ES_KC_POST_LAST,
-    F_ES_KC_LAST = F_ES_KC_POST_LAST - 1
-};
-
-// Fake keycodes, independent of the layer.
-enum fake_common_keycodes {
-    F_CM_KC_FIRST = F_ES_KC_POST_LAST,
-    F_CM_BSPS = F_CM_KC_FIRST,
-    F_CM_LEFT,
-    F_CM_RGHT,
-
-    F_CM_KC_POST_LAST,
-    F_CM_KC_LAST = F_CM_KC_POST_LAST - 1
-};
-
-// Fake keycodes, keymap specific.
-// If in layer _EN_US, will issue a symbol consistent with an ES-LA keymap.
-enum fake_keymap_specific_keycodes {
-    F_KS_KC_FIRST = F_CM_KC_POST_LAST,
-    F_KS_LT = F_KS_KC_FIRST,
-    F_KS_QUOT,
-    F_KS_ACUT,
-    F_KS_PLUS,
-    F_KS_LCUB,
-    F_KS_RCUB,
-
-    F_KS_KC_POST_LAST,
-    F_KS_KC_LAST = F_KS_KC_POST_LAST - 1
-};
-
-#define FAKE_KC_COUNT (F_KS_KC_POST_LAST - F_ES_KC_FIRST)
-
-// Fake keycodes, issuing a symbols from alt sequences with send_string.
-enum fake_senstring_keycodes {
-    F_SS_KC_FIRST = F_KS_KC_POST_LAST,
-    F_SS_NTILDE = F_SS_KC_FIRST,
-    F_SS_INV_QUESTION,
-    F_SS_BAR,
-
-    F_SS_KC_POST_LAST,
-    F_SS_KC_LAST = F_SS_KC_POST_LAST - 1,
-};
-
-// UUSST: Unshifted keycode translates to an unshifted, shifted keycode translates to a different shifted keycode.
+// UUSST: Unshifted keycode translates to an unshifted keycode, shifted keycode translates to a different shifted keycode.
 enum {
-    UUSST_KC_FIRST = F_SS_KC_POST_LAST,
+    UUSST_KC_FIRST = LAYER_KC_POST_LAST,
     UUSST_KC_2 = UUSST_KC_FIRST,
     UUSST_KC_6,
     UUSST_KC_8,
     UUSST_KC_9,
     UUSST_KC_QUOT,
     UUSST_KC_DOT,
+    UUSST_KC_NTIL,
+    UUSST_KC_Q,
+    UUSST_KC_ACUT,
 
     UUSST_KC_POST_LAST,
     UUSST_KC_LAST = UUSST_KC_POST_LAST - 1,
@@ -124,17 +65,47 @@ enum {
 
 #define UUSST_KC_COUNT (UUSST_KC_POST_LAST - UUSST_KC_FIRST)
 
-// UUSUT: Unshifted keycode translates to an unshifted keycode, hifted keycode translates to a different unshifted keycode.
+// UUSUT: Unshifted keycode translates to an unshifted keycode, shifted keycode translates to a different unshifted keycode.
 enum {
     UUSUT_KC_FIRST = UUSST_KC_POST_LAST,
     UUSUT_KC_7 = UUSUT_KC_FIRST,
     UUSUT_KC_0,
     UUSUT_KC_COMM,
+    UUSUT_KC_BSDL,
 
     UUSUT_KC_POST_LAST,
     UUSUT_KC_LAST = UUSUT_KC_POST_LAST - 1,
 };
 
 #define UUSUT_KC_COUNT (UUSUT_KC_POST_LAST - UUSUT_KC_FIRST)
+
+// USSST: Unshifted keycode translates to a shifted keycode, shifted keycode translates to a different shifted keycode.
+enum {
+    USSST_KC_FIRST = UUSUT_KC_POST_LAST,
+    USSST_KC_LABK = USSST_KC_FIRST,
+    USSST_KC_PLUS,
+    USSST_KC_IQUE,
+
+    USSST_KC_POST_LAST,
+    USSST_KC_LAST = USSST_KC_POST_LAST - 1,
+};
+
+#define USSST_KC_COUNT (USSST_KC_POST_LAST - USSST_KC_FIRST)
+
+// USSUT: Unshifted keycode translates to a shifted keycode, shifted keycode translates to a different unshifted keycode.
+enum {
+    USSUT_KC_FIRST = USSST_KC_POST_LAST,
+    USSUT_KC_LCBR = USSUT_KC_FIRST,
+    USSUT_KC_RCBR,
+    USSUT_KC_PIPE,
+
+    USSUT_KC_POST_LAST,
+    USSUT_KC_LAST = USSUT_KC_POST_LAST - 1,
+};
+
+#define USSUT_KC_COUNT  (USSUT_KC_POST_LAST - USSUT_KC_FIRST)
+#define UST_FIRST       UUSST_KC_FIRST
+#define UST_LAST        USSUT_KC_POST_LAST
+#define UST_COUNT       (1 + UST_LAST - UST_FIRST)
 
 // clang-format on
