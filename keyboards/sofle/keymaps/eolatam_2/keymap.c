@@ -17,13 +17,16 @@
 #include QMK_KEYBOARD_H
 
 #include "local_encoder.h"
-#include "local_enums.h"
+#include "local_general.h"
 #include "local_init.h"
 #include "local_layers.h"
 #include "local_oled.h"
 #include "local_special_keys.h"
 
-uint8_t current_raise_layer = _RAISE_ES_LA;
+#ifdef CONSOLE_ENABLE
+#include "print.h"
+#endif
+
 layer_state_t layer_state_set_user(layer_state_t state) {
     return update_tri_layer_state(state, _LOWER, current_raise_layer, _ADJUST);
 }
@@ -37,6 +40,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
     static uint8_t numpad_caller = _NUMPAD;
 
+    dprintf("first layer is _ES_LA: %u\n", _ES_LA);
+    dprintf("current_raise_layer: %u\n", current_raise_layer - _RAISE_ES_LA);
+
     switch (keycode) {
         case LAYER_KC_ES_LA:
         case LAYER_KC_EN_US:
@@ -44,6 +50,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 const uint8_t delta = keycode - LAYER_KC_ES_LA;
                 set_single_persistent_default_layer(_ES_LA + delta);
                 current_raise_layer = _RAISE_ES_LA + delta;
+                dprintf("setting current_raise_layer: %u\n", current_raise_layer - _RAISE_ES_LA);
             }
             return false;
 
@@ -71,27 +78,50 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_LSFT:
         case KC_RSFT:
             {
-                bool ok = true;
+                ust_show_flags("before");
                 mark_shift_pressed(keycode, is_pressed);
-                ok = uusst_kc_operate_on_shift(keycode, is_pressed) && ok;
-                ok = uusut_kc_operate_on_shift(keycode, is_pressed) && ok;
-                ok = ussst_kc_operate_on_shift(keycode, is_pressed) && ok;
-                ok = ussut_kc_operate_on_shift(keycode, is_pressed) && ok;
 
+                bool ok = true;
+                ok = uusst_kc_operate_on_shift(mod_state, keycode, is_pressed) && ok;
+                ok = uusut_kc_operate_on_shift(mod_state, keycode, is_pressed) && ok;
+                ok = ussst_kc_operate_on_shift(mod_state, keycode, is_pressed) && ok;
+                ok = ussut_kc_operate_on_shift(mod_state, keycode, is_pressed) && ok;
+
+                ust_show_flags(" after");
                 return ok;
             }
 
         case UUSST_KC_FIRST ... UUSST_KC_LAST:
-            return uusst_kc_operate_on_keycode(mod_state, keycode, is_pressed);
+            {
+                ust_show_flags("before");
+                const bool ok = uusst_kc_operate_on_keycode(mod_state, keycode, is_pressed);
+                ust_show_flags(" after");
+                return ok;
+            }
 
         case UUSUT_KC_FIRST ... UUSUT_KC_LAST:
-            return uusut_kc_operate_on_keycode(mod_state, keycode, is_pressed);
+            {
+                ust_show_flags("before");
+                const bool ok = uusut_kc_operate_on_keycode(mod_state, keycode, is_pressed);
+                ust_show_flags(" after");
+                return ok;
+            }
 
         case USSST_KC_FIRST ... USSST_KC_LAST:
-            return ussst_kc_operate_on_keycode(mod_state, keycode, is_pressed);
+            {
+                ust_show_flags("before");
+                const bool ok = ussst_kc_operate_on_keycode(mod_state, keycode, is_pressed);
+                ust_show_flags(" after");
+                return ok;
+            }
 
         case USSUT_KC_FIRST ... USSUT_KC_LAST:
-            return ussut_kc_operate_on_keycode(mod_state, keycode, is_pressed);
+            {
+                ust_show_flags("before");
+                const bool ok = ussut_kc_operate_on_keycode(mod_state, keycode, is_pressed);
+                ust_show_flags(" after");
+                return ok;
+            }
     }
 
     return true;
@@ -114,5 +144,14 @@ void keyboard_post_init_user(void) {
     my_local_status._is_left = is_keyboard_left();
 
     local_init_oled();
+
+    local_init_raise_layer();
+
+#ifdef CONSOLE_ENABLE
+    debug_enable=true;
+    debug_matrix=true;
+    debug_keyboard=true;
+    debug_mouse=true;
+#endif
 }
 

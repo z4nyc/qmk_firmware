@@ -104,8 +104,41 @@ enum {
 };
 
 #define USSUT_KC_COUNT  (USSUT_KC_POST_LAST - USSUT_KC_FIRST)
-#define UST_FIRST       UUSST_KC_FIRST
-#define UST_LAST        USSUT_KC_POST_LAST
-#define UST_COUNT       (1 + UST_LAST - UST_FIRST)
+
+#define UST_KC_FIRST    UUSST_KC_FIRST
+#define UST_KC_LAST     USSUT_KC_LAST
+#define UST_KC_COUNT    (1 + UST_KC_LAST - UST_KC_FIRST)
+
+
+extern uint8_t current_raise_layer;
+void local_init_raise_layer(void);
+
+// useful macros
+
+#define REP_1(x)    x
+#define REP_2(x)    REP_1(x), REP_1(x)
+#define REP_3(x)    REP_2(x), REP_1(x)
+#define REP_4(x)    REP_3(x), REP_1(x)
+#define REP_5(x)    REP_4(x), REP_1(x)
+#define REP_6(x)    REP_5(x), REP_1(x)
+#define REP_7(x)    REP_6(x), REP_1(x)
+#define REP_8(x)    REP_7(x), REP_1(x)
+#define REP_9(x)    REP_8(x), REP_1(x)
+
+#define PRIMITIVE_CAT(a, ...)   a ## __VA_ARGS__
+#define REP(n, x)   PRIMITIVE_CAT(REP_ , n) (x)
+
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(byte)  \
+  (byte & 0x80 ? '1' : '0'), \
+  (byte & 0x40 ? '1' : '0'), \
+  (byte & 0x20 ? '1' : '0'), \
+  (byte & 0x10 ? '1' : '0'), \
+  (byte & 0x08 ? '1' : '0'), \
+  (byte & 0x04 ? '1' : '0'), \
+  (byte & 0x02 ? '1' : '0'), \
+  (byte & 0x01 ? '1' : '0') 
+
+#define EOA_FOR_RANGE(type, name, first, last)    for (type name = first; name <= last; ++name)
 
 // clang-format on

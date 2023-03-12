@@ -19,7 +19,7 @@
 #include QMK_KEYBOARD_H
 
 #include "local_init.h"
-#include "local_enums.h"
+#include "local_general.h"
 #include "local_oled.h"
 
 #if 0

@@ -21,53 +21,40 @@
 
 #pragma once
 
-enum potential_modifiers {
-    PMOD_SHIFT,
-    PMOD_ALTGR,
-
-    PMOD_COUNT
-};
-
-bool process_potential_modification(const uint8_t mod_state,
-                                    const uint16_t keycode,
-                                    const bool is_pressed);
-
-bool process_fake_symbols(const uint8_t mod_state,
-                          const uint16_t keycode,
-                          const bool is_pressed);
-
-bool simulate_es_la_on_en_us_key_stroke(const uint8_t mod_state,
-                                    	const uint16_t keycode,
-                                    	const bool is_pressed);
-
 void mark_shift_pressed(const uint16_t keycode,
                         const bool is_pressed);
+
+void ust_show_flags(const char* const msg);
 
 bool uusst_kc_operate_on_keycode(const uint8_t mod_state,
                                  const uint16_t keycode,
                                  const bool is_pressed);
 
-bool uusst_kc_operate_on_shift(const uint16_t keycode,
+bool uusst_kc_operate_on_shift(const uint8_t mod_state,
+                               const uint16_t keycode,
                                const bool is_pressed);
 
 bool uusut_kc_operate_on_keycode(const uint8_t mod_state,
                                  const uint16_t keycode,
                                  const bool is_pressed);
 
-bool uusut_kc_operate_on_shift(const uint16_t keycode,
+bool uusut_kc_operate_on_shift(const uint8_t mod_state,
+                               const uint16_t keycode,
                                const bool is_pressed);
 
 bool ussst_kc_operate_on_keycode(const uint8_t mod_state,
                                  const uint16_t keycode,
                                  const bool is_pressed);
 
-bool ussst_kc_operate_on_shift(const uint16_t keycode,
+bool ussst_kc_operate_on_shift(const uint8_t mod_state,
+                               const uint16_t keycode,
                                const bool is_pressed);
 
 bool ussut_kc_operate_on_keycode(const uint8_t mod_state,
                                  const uint16_t keycode,
                                  const bool is_pressed);
 
-bool ussut_kc_operate_on_shift(const uint16_t keycode,
+bool ussut_kc_operate_on_shift(const uint8_t mod_state,
+                               const uint16_t keycode,
                                const bool is_pressed);
 

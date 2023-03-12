@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include "local_enums.h"
+#include "local_general.h"
 
 #ifdef ENCODER_ENABLE
 
