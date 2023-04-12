@@ -21,10 +21,10 @@
 
 #pragma once
 
-void mark_shift_pressed(const uint16_t keycode,
-                        const bool is_pressed);
+void mark_modifier_pressed(const uint16_t keycode,
+                           const bool is_pressed);
 
-void ust_show_flags(const char* const msg);
+void ust_show_key_flags(const char* const msg);
 
 bool uusst_kc_operate_on_keycode(const uint8_t mod_state,
                                  const uint16_t keycode,
@@ -57,4 +57,8 @@ bool ussut_kc_operate_on_keycode(const uint8_t mod_state,
 bool ussut_kc_operate_on_shift(const uint8_t mod_state,
                                const uint16_t keycode,
                                const bool is_pressed);
+
+bool ust_kc_operate_on_altgr(const uint8_t mod_state,
+                             const uint16_t keycode,
+                             const bool is_pressed);
 

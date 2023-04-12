@@ -20,24 +20,56 @@
 
 #ifdef ENCODER_ENABLE
 
-const uint16_t get_encoder0_keycode(const bool clockwise) {
+void move_encoder0(const bool clockwise) {
     const uint16_t lnum = get_highest_layer(layer_state);
     if (lnum == _RAISE_ES_LA || lnum == _RAISE_EN_US) {
         // mouse horizontal wheel.
-        return clockwise ? KC_WH_L : KC_WH_R;
+        if (clockwise) {
+            tap_code(KC_WH_L);
+        } else {
+            tap_code(KC_WH_R);
+        }
+        return;
     }
 
-    return clockwise ? KC_BRIU : KC_BRID;
+    // brightness
+    if (clockwise) {
+        tap_code(KC_BRIU);
+    } else {
+        tap_code(KC_BRID);
+    }
 }
 
-const uint16_t get_encoder1_keycode(const bool clockwise) {
-    return clockwise ? KC_VOLU : KC_VOLD;
+void move_encoder1(const bool clockwise) {
+    const uint16_t mods = get_mods();
+    if (((mods & MOD_MASK_CTRL) == 0) && ((mods & MOD_BIT(KC_LALT)) != 0)) {
+        // alt+tab or alt+shift+tab
+        const bool shift_is_pressed = (mods & MOD_MASK_SHIFT) ? true : false;
+        if (clockwise || shift_is_pressed) {
+            tap_code(KC_TAB);
+            return;
+        }
+
+        register_code(KC_LSFT);
+        tap_code(KC_TAB);
+        unregister_code(KC_LSFT);
+        return;
+    }
+
+    // brightness
+    if (clockwise) {
+        tap_code(KC_VOLU);
+    } else {
+        tap_code(KC_VOLD);
+    }
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    const uint16_t k = (index == 0) ? get_encoder0_keycode(clockwise) :
-                                      get_encoder1_keycode(clockwise);
-    tap_code(k);
+    if (index == 0) {
+        move_encoder0(clockwise);
+    } else {
+        move_encoder1(clockwise);
+    }
 
     return true;
 }

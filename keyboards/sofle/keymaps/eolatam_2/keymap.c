@@ -78,8 +78,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KC_LSFT:
         case KC_RSFT:
             {
-                ust_show_flags("before");
-                mark_shift_pressed(keycode, is_pressed);
+                ust_show_key_flags("before");
+                mark_modifier_pressed(keycode, is_pressed);
 
                 bool ok = true;
                 ok = uusst_kc_operate_on_shift(mod_state, keycode, is_pressed) && ok;
@@ -87,39 +87,49 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 ok = ussst_kc_operate_on_shift(mod_state, keycode, is_pressed) && ok;
                 ok = ussut_kc_operate_on_shift(mod_state, keycode, is_pressed) && ok;
 
-                ust_show_flags(" after");
+                ust_show_key_flags(" after");
+                return ok;
+            }
+
+        case KC_RALT:
+            {
+                ust_show_key_flags("before");
+                mark_modifier_pressed(keycode, is_pressed);
+                const bool ok = ust_kc_operate_on_altgr(mod_state, keycode, is_pressed);
+                ust_show_key_flags(" after");
+
                 return ok;
             }
 
         case UUSST_KC_FIRST ... UUSST_KC_LAST:
             {
-                ust_show_flags("before");
+                ust_show_key_flags("before");
                 const bool ok = uusst_kc_operate_on_keycode(mod_state, keycode, is_pressed);
-                ust_show_flags(" after");
+                ust_show_key_flags(" after");
                 return ok;
             }
 
         case UUSUT_KC_FIRST ... UUSUT_KC_LAST:
             {
-                ust_show_flags("before");
+                ust_show_key_flags("before");
                 const bool ok = uusut_kc_operate_on_keycode(mod_state, keycode, is_pressed);
-                ust_show_flags(" after");
+                ust_show_key_flags(" after");
                 return ok;
             }
 
         case USSST_KC_FIRST ... USSST_KC_LAST:
             {
-                ust_show_flags("before");
+                ust_show_key_flags("before");
                 const bool ok = ussst_kc_operate_on_keycode(mod_state, keycode, is_pressed);
-                ust_show_flags(" after");
+                ust_show_key_flags(" after");
                 return ok;
             }
 
         case USSUT_KC_FIRST ... USSUT_KC_LAST:
             {
-                ust_show_flags("before");
+                ust_show_key_flags("before");
                 const bool ok = ussut_kc_operate_on_keycode(mod_state, keycode, is_pressed);
-                ust_show_flags(" after");
+                ust_show_key_flags(" after");
                 return ok;
             }
     }

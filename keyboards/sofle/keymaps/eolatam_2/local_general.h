@@ -125,8 +125,8 @@ void local_init_raise_layer(void);
 #define REP_8(x)    REP_7(x), REP_1(x)
 #define REP_9(x)    REP_8(x), REP_1(x)
 
-#define PRIMITIVE_CAT(a, ...)   a ## __VA_ARGS__
-#define REP(n, x)   PRIMITIVE_CAT(REP_ , n) (x)
+#define REP_CAT(a, ...)   a ## __VA_ARGS__
+#define REP(n, x)   REP_CAT(REP_ , n) (x)
 
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 #define BYTE_TO_BINARY(byte)  \
@@ -140,5 +140,11 @@ void local_init_raise_layer(void);
   (byte & 0x01 ? '1' : '0') 
 
 #define EOA_FOR_RANGE(type, name, first, last)    for (type name = first; name <= last; ++name)
+
+#define EOA_BIT_POS(type, size, val, arr_i, bit_i) \
+    const type arr_i = val / size; \
+    const type bit_i = val % size;
+
+#define EOA_GET_UST_KC_INDEX(keycode) ((keycode) - UST_KC_FIRST)
 
 // clang-format on
