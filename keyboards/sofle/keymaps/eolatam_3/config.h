@@ -39,22 +39,7 @@
 #define SPLIT_LED_STATE_ENABLE
 #define SPLIT_LAYER_STATE_ENABLE
 
-#if 0
-// space cadet configuration
-#if defined(LSPO_KEYS) || defined(RSPC_KEYS) || defined(LCPO_KEYS) || defined(RCPC_KEYS) || defined(LAPO_KEYS) || defined(RAPC_KEYS)
-  #error "neither of these keys must be defined yet"
-#else
-  // shift keys: ()
-  #define LSPO_KEYS KC_LEFT_SHIFT,  KC_LEFT_SHIFT,  KC_9
-  #define RSPC_KEYS KC_RIGHT_SHIFT, KC_RIGHT_SHIFT, KC_0
+#define NO_ACTION_MACRO
+#define NO_ACTION_FUNCTION
+#define NO_ACTION_ONESHOT
 
-  // control keys: []
-  #define LCPO_KEYS KC_LEFT_CTRL,  KC_TRANSPARENT, KC_LBRC
-  #define RCPC_KEYS KC_RIGHT_CTRL, KC_TRANSPARENT, KC_RBRC
-
-  // alt keys: {}
-  #define LAPO_KEYS KC_LEFT_ALT,  KC_LEFT_SHIFT,  KC_LBRC
-  #define RAPC_KEYS KC_RIGHT_ALT, KC_RIGHT_SHIFT, KC_RBRC
-#endif
-
-#endif
