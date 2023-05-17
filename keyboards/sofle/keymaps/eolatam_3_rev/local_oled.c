@@ -22,56 +22,7 @@
 #include "local_general.h"
 #include "local_oled.h"
 
-#if 0
-static void render_logo(void) {
-    static const char PROGMEM qmk_logo[] = {
-        0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8a,0x8b,0x8c,0x8d,0x8e,0x8f,0x90,0x91,0x92,0x93,0x94,
-        0xa0,0xa1,0xa2,0xa3,0xa4,0xa5,0xa6,0xa7,0xa8,0xa9,0xaa,0xab,0xac,0xad,0xae,0xaf,0xb0,0xb1,0xb2,0xb3,0xb4,
-        0xc0,0xc1,0xc2,0xc3,0xc4,0xc5,0xc6,0xc7,0xc8,0xc9,0xca,0xcb,0xcc,0xcd,0xce,0xcf,0xd0,0xd1,0xd2,0xd3,0xd4,0
-    };
-
-    oled_write_P(qmk_logo, false);
-}
-#endif
 static uint8_t left_pos = 2;
-
-// extern local_status_t my_local_status;
-
-#if 0
-       // left
-       0b00000000       0b01111110, //  0
-       0b00011000       0b01111110,
-       0b00011000       0b01100110,
-       0b00011000       0b01100110,
-       0b00111100       0b01100110,
-       0b00111100       0b01100110,
-       0b00111100       0b01100110,
-       0b01111110       0b01100110, //  7
-       0b01100110       0b01100110, //  8
-       0b01100110       0b01100110,
-       0b11000011       0b01100110,
-       0b11000011       0b01100110,
-       0b11100111       0b01100110,
-       0b11100111       0b01100110,
-       0b01100110       0b01100110,
-       0b01100110       0b01100110, // 15
-       0b01100110       0b01100110, // 16
-       0b01100110       0b01100110,
-       0b01100110       0b11100111,
-       0b01100110       0b11100111,
-       0b01100110       0b11000011,
-       0b01100110       0b11000011,
-       0b01100110       0b01100110,
-       0b01100110       0b01100110, // 23
-       0b01100110       0b01111110, // 24
-       0b01100110       0b00111100,
-       0b01100110       0b00111100,
-       0b01100110       0b00111100,
-       0b01100110       0b00011000,
-       0b01100110       0b00011000,
-       0b01111110       0b00011000,
-       0b01111110       0b00000000, // 31
-#endif
 
 #define ARROW_SIZE 32
 #define ARROW_TYPE_STEP 3
@@ -237,11 +188,40 @@ void print_caps_lock(const uint8_t col, const uint8_t row) {
     write_lock_space(col, row);
 }
 
+#define UPPER_LOCK_POS 4
+#define LOWER_LOCK_POS 7
+#define UPPER_MODIFIER_POS 10
+
+static void print_mods(const uint16_t mods,
+                       const uint16_t lbit,
+                       const uint16_t rbit,
+                       const char c,
+                       const uint8_t pos)
+{
+    static char line[] = "     ";
+    const char lchar = (mods & lbit) ? c : ' ';
+    const char rchar = (mods & rbit) ? c : ' ';
+    line[0] = lchar;
+    line[4] = rchar;
+
+    oled_set_cursor(0, pos);
+    oled_write(line, false);
+}
+
+static void print_modifiers(const uint8_t pos) {
+    const uint16_t mods = get_mods();
+
+    print_mods(mods, MOD_BIT(KC_LSFT), MOD_BIT(KC_RSFT), 'S', pos + 0);
+    print_mods(mods, MOD_BIT(KC_LCTL), MOD_BIT(KC_RCTL), 'C', pos + 1);
+    print_mods(mods, MOD_BIT(KC_LALT), MOD_BIT(KC_RALT), 'A', pos + 2);
+    print_mods(mods, MOD_BIT(KC_LGUI), MOD_BIT(KC_RGUI), 'M', pos + 3);
+}
+
 static void print_status_narrow(void) {
     oled_set_cursor(0, 0);
     print_arrow();
 
-    oled_set_cursor(0, 2);
+    oled_set_cursor(0, 1);
     switch (get_highest_layer(layer_state)) {
         case _RAISE_ES_LA:
             oled_write("raise", false);
@@ -256,11 +236,11 @@ static void print_status_narrow(void) {
             oled_write("adjst", false);
             break;
 
-	default:
+	    default:
             oled_write("-----", false);
     }
 
-    oled_set_cursor(0, 3);
+    oled_set_cursor(0, 2);
     switch (get_highest_layer(default_layer_state)) {
         case _ES_LA:
             oled_write("ES-LA", false);
@@ -275,9 +255,9 @@ static void print_status_narrow(void) {
             oled_write("?????", true);
     }
 
-    print_num_lock(left_pos, 5);
-    print_caps_lock(left_pos, 8);
-
+    print_num_lock(left_pos, UPPER_LOCK_POS);
+    print_caps_lock(left_pos, LOWER_LOCK_POS);
+    print_modifiers(UPPER_MODIFIER_POS);
 }
 
 bool local_oled_task_user(void) {
@@ -298,8 +278,8 @@ void local_init_oled(void) {
     left_pos = my_local_status._is_left ? 0 : 2;
 
     // print squares for num/caps lock.
-    write_lock_space(left_pos, 5);
-    write_lock_space(left_pos, 8);
+    write_lock_space(left_pos, UPPER_LOCK_POS);
+    write_lock_space(left_pos, LOWER_LOCK_POS);
 }
 
 
